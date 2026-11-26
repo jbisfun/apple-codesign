@@ -115,6 +115,9 @@ mod bundle_signing;
 pub use bundle_signing::*;
 mod certificate;
 pub use certificate::*;
+// The CLI, stapling and ticket lookup need a blocking HTTP client, which reqwest
+// doesn't have on wasm targets (the browser signer only signs bundles).
+#[cfg(not(target_family = "wasm"))]
 pub mod cli;
 mod code_directory;
 pub use code_directory::*;
@@ -159,7 +162,9 @@ pub use signing_settings::*;
 mod signing;
 pub use signing::*;
 pub mod specification;
+#[cfg(not(target_family = "wasm"))]
 pub mod stapling;
+#[cfg(not(target_family = "wasm"))]
 pub mod ticket_lookup;
 mod verify;
 pub use verify::*;
